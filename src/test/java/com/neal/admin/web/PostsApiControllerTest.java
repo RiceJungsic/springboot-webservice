@@ -3,6 +3,7 @@ package com.neal.admin.web;
 import com.neal.admin.web.domain.posts.Posts;
 import com.neal.admin.web.domain.posts.PostsRepository;
 import com.neal.admin.web.dto.PostsSaveRequestDto;
+import com.neal.admin.web.dto.PostsUpdateRequestDto;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,9 +60,42 @@ public class PostsApiControllerTest {
         assertThat(postsList.get(0).getTitle()).isEqualTo(title);
         assertThat(postsList.get(0).getContent()).isEqualTo(content);
         assertThat(postsList.get(0).getAuthor()).isEqualTo(author);
+    }
+
+    @Test
+    public void Posts_수정() throws Exception {
+
+        Posts savePosts = postsRepository.save(Posts.builder()
+                        .title("title")
+                        .content("content")
+                        .author("author")
+                        .build()
+        );
+
+        Long updateId = savePosts.getId();
+        String expectedTitle = "title2";
+        String expectedContent = "content2";
+
+        PostsUpdateRequestDto requestDto = PostsUpdateRequestDto.builder()
+                .title(expectedTitle)
+                .content(expectedContent)
+                .build();
+
+        String url = "http://localhost:" + port + "/api/v1/posts/" + updateId;
+
+        HttpEntity<PostsUpdateRequestDto> requestEntity = new HttpEntity<>(requestDto);
+
+        // when
+        ResponseEntity<Long> responseEntity = restTemplate.exchange(url, HttpMethod.PUT, requestEntity, Long.class);
 
 
+        // then
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(responseEntity.getBody()).isGreaterThan(0L);
 
+        List<Posts> postsList = postsRepository.findAll();
+        assertThat(postsList.get(0).getTitle()).isEqualTo(expectedTitle);
+        assertThat(postsList.get(0).getContent()).isEqualTo(expectedContent);
 
     }
 
