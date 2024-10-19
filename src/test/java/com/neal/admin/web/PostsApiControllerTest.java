@@ -34,12 +34,12 @@ public class PostsApiControllerTest {
     private PostsRepository postsRepository;
 
     @AfterEach
-    public void tearDown() {
+    public void tearDown() throws Exception {
         postsRepository.deleteAll();
     }
 
     @Test
-    void Posts_등록_테스트() {
+    void Posts_등록_테스트() throws Exception {
 
         String title = "title";
         String content = "content";
