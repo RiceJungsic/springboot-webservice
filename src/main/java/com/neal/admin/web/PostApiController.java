@@ -29,4 +29,9 @@ public class PostApiController {
         return postsService.findById(id);
     }
 
+    @PutMapping("/api/v1/posts/{id}")
+    public Long update(@PathVariable Long id, @RequestBody PostsUpdateRequestDto requestDto) {
+        return postsService.update(id, requestDto);
+    }
+
 }
